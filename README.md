@@ -58,8 +58,20 @@ fullstack-notes/
 
    ```bash
    cp apps/web/.env.example apps/web/.env
-   # Edit apps/web/.env with your database URL and Better Auth secret
    ```
+
+   Edit `apps/web/.env` with the following values:
+   - **DATABASE_URL**: Your PostgreSQL connection string
+     - Format: `postgresql://username:password@host:port/database?schema=public`
+     - Example: `postgresql://postgres:mypassword@localhost:5432/notes?schema=public`
+
+   - **BETTER_AUTH_SECRET**: A random secret key for signing session tokens
+     - Generate one with: `openssl rand -base64 32`
+     - Or use any secure random string (keep it secret!)
+
+   - **BETTER_AUTH_URL**: Your application's base URL
+     - For local development: `http://localhost:3000`
+     - For production: Your production domain (e.g., `https://yourdomain.com`)
 
 3. **Set up the database:**
 
