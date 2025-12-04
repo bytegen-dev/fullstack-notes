@@ -1,0 +1,23 @@
+{
+  "name": "fullstack-notes",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.24.0",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "start": "pnpm --filter web start",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format",
+    "prisma:generate": "pnpm --filter @notes/database prisma:generate",
+    "prisma:migrate:dev": "pnpm --filter @notes/database prisma:migrate:dev",
+    "prisma:studio": "pnpm --filter @notes/database prisma:studio"
+  },
+  "devDependencies": {
+    "eslint": "9.39.1",
+    "eslint-config-prettier": "10.1.8",
+    "prettier": "3.7.3",
+    "typescript": "5.9.3"
+  }
+}
+
