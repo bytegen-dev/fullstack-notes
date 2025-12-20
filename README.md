@@ -1,6 +1,6 @@
 # Fullstack Notes
 
-A simple notes app built with Next.js, Prisma, PostgreSQL, Better Auth, and Zod. This project demonstrates understanding of the Sokosumi architecture pattern.
+A simple notes app built with Next.js, Prisma, PostgreSQL, Better Auth, and Zod.
 
 ## Tech Stack
 
@@ -73,6 +73,22 @@ fullstack-notes/
      - For local development: `http://localhost:3000`
      - For production: Your production domain (e.g., `https://yourdomain.com`)
 
+   - **GITHUB_CLIENT_ID** (optional): GitHub OAuth Client ID
+     - Get one from: https://github.com/settings/developers
+     - Create a new OAuth App
+     - Authorization callback URL: `http://localhost:3000/api/auth/callback/github` (dev) or your production URL
+
+   - **GITHUB_CLIENT_SECRET** (optional): GitHub OAuth Client Secret
+     - Generated when you create the OAuth App on GitHub
+
+   - **GOOGLE_CLIENT_ID** (optional): Google OAuth Client ID
+     - Get one from: https://console.cloud.google.com/apis/credentials
+     - Create a new OAuth 2.0 Client ID
+     - Authorized redirect URIs: `http://localhost:3000/api/auth/callback/google` (dev) or your production URL
+
+   - **GOOGLE_CLIENT_SECRET** (optional): Google OAuth Client Secret
+     - Generated when you create the OAuth Client ID on Google Cloud Console
+
 3. **Set up the database:**
 
    ```bash
@@ -91,6 +107,8 @@ fullstack-notes/
 ## Features
 
 - ✅ User authentication (signup/signin)
+- ✅ GitHub OAuth sign-in (optional)
+- ✅ Google OAuth sign-in (optional)
 - ✅ Create notes
 - ✅ Read notes
 - ✅ Update notes

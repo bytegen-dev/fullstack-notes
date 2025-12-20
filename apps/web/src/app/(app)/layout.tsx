@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { getSession } from "@/lib/auth/utils";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Header } from "@/components/header";
 
 export default async function AppLayout({
   children,
@@ -16,14 +16,8 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <h1 className="text-xl font-bold">Notes</h1>
-          <ThemeToggle />
-        </div>
-      </header>
+      <Header />
       <main className="container mx-auto px-4 py-8">{children}</main>
     </div>
   );
 }
-
