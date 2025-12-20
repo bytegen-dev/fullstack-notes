@@ -132,6 +132,7 @@ fullstack-notes/
 - `pnpm prisma:generate` - Generate Prisma client
 - `pnpm prisma:migrate:dev` - Run database migrations
 - `pnpm prisma:migrate:deploy` - Apply migrations in production
+- `pnpm prisma:seed` - Seed database with 50 sample notes
 - `pnpm prisma:studio` - Open Prisma Studio (visual database browser)
 
 **Additional Prisma commands** (available via Prisma CLI):

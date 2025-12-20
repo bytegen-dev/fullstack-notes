@@ -33,7 +33,11 @@
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
+    "prisma:seed": "tsx prisma/seed.ts",
     "format": "prettier --write \"src/**/*.ts\""
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.0.1",
@@ -45,6 +49,7 @@
     "@types/pg": "8.15.6",
     "dotenv": "17.2.3",
     "prisma": "7.0.1",
+    "tsx": "^4.19.2",
     "typescript": "5.9.3"
   }
 }
