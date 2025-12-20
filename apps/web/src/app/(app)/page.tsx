@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 
-import { NoteList } from "@/components/note-list";
+import { NoteListServer } from "@/components/note-list-server";
 import { CreateNoteButton } from "@/components/create-note-button";
 import { SearchInput } from "@/components/search-input";
+import { ViewToggle } from "@/components/view-toggle";
 
 interface HomePageProps {
-  searchParams: Promise<{ search?: string }>;
+  searchParams: Promise<{ search?: string; page?: string; view?: string }>;
 }
 
 function NotesLoading() {
@@ -19,7 +20,10 @@ function NotesLoading() {
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-  const { search } = await searchParams;
+  const params = await searchParams;
+  const search = params.search;
+  const page = params.page ? parseInt(params.page, 10) : 1;
+  const view = (params.view === "list" ? "list" : "grid") as "grid" | "list";
 
   return (
     <div className="space-y-6">
@@ -31,10 +35,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         >
           <SearchInput />
         </Suspense>
-        <CreateNoteButton />
+        <div className="flex items-center gap-2">
+          <ViewToggle view={view} />
+          <CreateNoteButton />
+        </div>
       </div>
       <Suspense fallback={<NotesLoading />}>
-        <NoteList search={search} />
+        <NoteListServer search={search} page={page} view={view} />
       </Suspense>
     </div>
   );

@@ -1,23 +1,56 @@
 import type { Prisma } from "../generated/prisma/client.js";
 import prisma from "../client.js";
 
+export interface PaginatedNotesResult {
+  notes: Awaited<ReturnType<typeof prisma.note.findMany>>;
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
 export const noteRepository = {
-  async findMany(userId: string, search?: string) {
+  async findMany(
+    userId: string,
+    search?: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<PaginatedNotesResult> {
     const where: Prisma.NoteWhereInput = {
       userId,
     };
 
+    // Add search condition
     if (search && search.trim()) {
-      where.OR = [
-        { title: { contains: search, mode: "insensitive" } },
-        { content: { contains: search, mode: "insensitive" } },
+      where.AND = [
+        {
+          OR: [
+            { title: { contains: search, mode: "insensitive" } },
+            { content: { contains: search, mode: "insensitive" } },
+          ],
+        },
       ];
     }
 
-    return prisma.note.findMany({
+    // Get total count
+    const total = await prisma.note.count({ where });
+
+    // Calculate pagination
+    const skip = (page - 1) * limit;
+    const totalPages = Math.ceil(total / limit);
+
+    const notes = await prisma.note.findMany({
       where,
-      orderBy: { updatedAt: "desc" },
+      orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+      skip,
+      take: limit,
     });
+
+    return {
+      notes,
+      total,
+      page,
+      totalPages,
+    };
   },
 
   async findById(id: string, userId: string) {

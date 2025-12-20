@@ -44,3 +44,16 @@ export async function deleteNote(id: string) {
   revalidatePath("/");
 }
 
+export async function getNotesPage(
+  search?: string,
+  page: number = 1,
+  limit: number = 10,
+) {
+  const session = await getSession();
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
+  return noteService.getNotes(session.user.id, search, page, limit);
+}
+

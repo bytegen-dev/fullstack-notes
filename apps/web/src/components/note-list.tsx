@@ -1,18 +1,70 @@
-import { noteService } from "@/lib/services";
-import { getSession } from "@/lib/auth/utils";
+"use client";
+
+import { useState, useEffect } from "react";
+import type { Note } from "@notes/database";
 import { NoteCard } from "./note-card";
+import { Pagination } from "./pagination";
+import { getNotesPage } from "@/lib/actions/note.action";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface NoteListProps {
+  initialNotes: Note[];
+  initialTotal: number;
+  initialPage: number;
+  initialTotalPages: number;
   search?: string;
+  view?: "grid" | "list";
 }
 
-export async function NoteList({ search }: NoteListProps) {
-  const session = await getSession();
-  if (!session?.user) {
-    return null;
-  }
+export function NoteList({
+  initialNotes,
+  initialTotal,
+  initialPage,
+  initialTotalPages,
+  search,
+  view = "grid",
+}: NoteListProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [notes, setNotes] = useState<Note[]>(initialNotes);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const notes = await noteService.getNotes(session.user.id, search);
+  // Reset when search or initial data changes
+  useEffect(() => {
+    setNotes(initialNotes);
+    setCurrentPage(initialPage);
+    setTotalPages(initialTotalPages);
+  }, [initialNotes, initialPage, initialTotalPages]);
+
+  async function handlePageChange(page: number) {
+    if (page < 1 || page > totalPages || page === currentPage || isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await getNotesPage(search, page, 10);
+      setNotes(result.notes);
+      setCurrentPage(result.page);
+      setTotalPages(result.totalPages);
+
+      // Update URL with page parameter
+      const params = new URLSearchParams(searchParams.toString());
+      if (page === 1) {
+        params.delete("page");
+      } else {
+        params.set("page", page.toString());
+      }
+      router.push(`?${params.toString()}`);
+    } catch (error) {
+      console.error("Error loading page:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   if (notes.length === 0) {
     return (
@@ -27,11 +79,21 @@ export async function NoteList({ search }: NoteListProps) {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {notes.map((note) => (
-        <NoteCard key={note.id} note={note} />
-      ))}
+    <div className="space-y-6">
+      <div
+        className={`grid gap-4 ${
+          view === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"
+        }`}
+      >
+        {notes.map((note) => (
+          <NoteCard key={note.id} note={note} />
+        ))}
+      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 }
-

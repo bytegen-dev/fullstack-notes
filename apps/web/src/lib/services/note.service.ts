@@ -3,8 +3,13 @@ import { noteRepository } from "@notes/database/repositories";
 import type { CreateNoteSchemaType, UpdateNoteSchemaType } from "@/lib/schemas/note";
 
 export const noteService = {
-  async getNotes(userId: string, search?: string) {
-    return noteRepository.findMany(userId, search);
+  async getNotes(
+    userId: string,
+    search?: string,
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    return noteRepository.findMany(userId, search, page, limit);
   },
 
   async getNoteById(id: string, userId: string) {

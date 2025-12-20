@@ -39,6 +39,8 @@ export function SearchInput() {
       } else {
         params.delete("search");
       }
+      // Reset to page 1 when search changes
+      params.delete("page");
       router.push(`?${params.toString()}`);
     }, 500);
 
