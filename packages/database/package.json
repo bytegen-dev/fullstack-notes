@@ -42,13 +42,12 @@
   "dependencies": {
     "@prisma/adapter-pg": "7.0.1",
     "@prisma/client": "7.0.1",
+    "better-auth": "1.4.4",
     "pg": "8.16.3"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^3.0.0",
     "@types/node": "22.19.1",
     "@types/pg": "8.15.6",
-    "bcryptjs": "^3.0.3",
     "dotenv": "17.2.3",
     "prisma": "7.0.1",
     "tsx": "^4.21.0",

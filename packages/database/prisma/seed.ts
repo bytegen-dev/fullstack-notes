@@ -2,16 +2,30 @@
 import { config } from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
-import bcrypt from "bcryptjs";
-import { randomUUID } from "crypto";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // Load .env file from the web app directory
 config({ path: resolve(__dirname, "../../../apps/web/.env") });
 
-// Now dynamically import Prisma client after env is loaded
+// Now dynamically import Prisma client and Better Auth after env is loaded
 const { default: prisma } = await import("../src/client.js");
+const { betterAuth } = await import("better-auth");
+const { prismaAdapter } = await import("better-auth/adapters/prisma");
+
+// Create Better Auth instance to use its signup API
+const auth = betterAuth({
+  database: prismaAdapter(prisma, {
+    provider: "postgresql",
+  }),
+  secret: process.env.BETTER_AUTH_SECRET || "",
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: false,
+    autoSignIn: false, // We don't need auto sign-in for seeding
+  },
+});
 
 const sampleTitles = [
   "Meeting Notes",
@@ -66,62 +80,48 @@ async function main() {
   const testEmail = "test@example.com";
   const testPassword = "password123";
 
-  // Find or create a test user
-  let user = await prisma.user.findFirst({
+  // Check if user already exists
+  const existingUser = await prisma.user.findFirst({
     where: { email: testEmail },
   });
 
-  if (!user) {
-    console.log("👤 Creating test user...");
-    user = await prisma.user.create({
-      data: {
-        email: testEmail,
-        name: "Test User",
-        emailVerified: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
+  let user;
+
+  if (existingUser) {
+    console.log(
+      "👤 Test user already exists, deleting to recreate with Better Auth...",
+    );
+    // Delete existing user (cascade will delete account and notes)
+    await prisma.user.delete({
+      where: { id: existingUser.id },
     });
   }
 
-  // Check if account exists, if not create one with password
-  const existingAccount = await prisma.account.findFirst({
-    where: {
-      userId: user.id,
-      providerId: "credential",
-    },
-  });
+  // Use Better Auth's signup API to create the user with password
+  // This ensures the password is hashed correctly in the format Better Auth expects
+  console.log("🔐 Creating test user with Better Auth signup API...");
+  try {
+    const result = await auth.api.signUpEmail({
+      body: {
+        email: testEmail,
+        password: testPassword,
+        name: "Test User",
+      },
+    });
 
-  if (!existingAccount) {
-    console.log("🔐 Creating password account...");
-    const hashedPassword = await bcrypt.hash(testPassword, 10);
-    await prisma.account.create({
-      data: {
-        id: randomUUID(),
-        accountId: testEmail,
-        providerId: "credential",
-        userId: user.id,
-        password: hashedPassword,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-    console.log("✅ Password account created!");
+    // Get the created user from the result
+    user = result.user;
+
+    if (!user) {
+      throw new Error("User was not created");
+    }
+
+    console.log("✅ Test user created successfully!");
     console.log(`   Email: ${testEmail}`);
     console.log(`   Password: ${testPassword}`);
-  } else {
-    console.log("🔐 Password account already exists, updating password...");
-    const hashedPassword = await bcrypt.hash(testPassword, 10);
-    await prisma.account.update({
-      where: { id: existingAccount.id },
-      data: {
-        password: hashedPassword,
-        updatedAt: new Date(),
-      },
-    });
-    console.log("✅ Password updated!");
-    console.log(`   Email: ${testEmail}`);
-    console.log(`   Password: ${testPassword}`);
+  } catch (error) {
+    console.error("❌ Error creating user with Better Auth:", error);
+    throw error;
   }
 
   // Delete existing notes for this user (to avoid duplicates on re-seed)
