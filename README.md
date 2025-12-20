@@ -113,7 +113,12 @@ fullstack-notes/
 - ✅ Read notes
 - ✅ Update notes
 - ✅ Delete notes
+- ✅ Search notes (server-side filtering)
+- ✅ Pagination (offset-based with page numbers)
+- ✅ Grid/List view toggle
 - ✅ Dark/light theme (auto-detect)
+- ✅ Cookie consent banner
+- ✅ Privacy policy page
 - ✅ Responsive design
 - ✅ Server-side rendering with Suspense
 
@@ -126,4 +131,9 @@ fullstack-notes/
 - `pnpm format` - Format code with Prettier
 - `pnpm prisma:generate` - Generate Prisma client
 - `pnpm prisma:migrate:dev` - Run database migrations
-- `pnpm prisma:studio` - Open Prisma Studio
+- `pnpm prisma:migrate:deploy` - Apply migrations in production
+- `pnpm prisma:studio` - Open Prisma Studio (visual database browser)
+
+**Additional Prisma commands** (available via Prisma CLI):
+
+- `pnpm --filter @notes/database prisma migrate reset` - Reset database (drops all data and reruns migrations)

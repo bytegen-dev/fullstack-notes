@@ -22,11 +22,6 @@ export function CookieConsent() {
     setShowBanner(false);
   }
 
-  function handleReject() {
-    localStorage.setItem(COOKIE_CONSENT_KEY, "rejected");
-    setShowBanner(false);
-  }
-
   if (!showBanner) return null;
 
   return (
@@ -34,8 +29,7 @@ export function CookieConsent() {
       <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex-1">
           <p className="text-sm text-muted-foreground">
-            We use cookies to enhance your experience. Essential cookies are
-            required for authentication and theme preferences.{" "}
+            This website uses cookies to ensure you get the best experience.{" "}
             <a
               href="/privacy"
               className="underline hover:text-foreground"
@@ -47,11 +41,8 @@ export function CookieConsent() {
           </p>
         </div>
         <div className="flex items-center gap-2 self-end sm:ml-auto">
-          <Button variant="outline" size="sm" onClick={handleReject}>
-            Reject
-          </Button>
           <Button size="sm" onClick={handleAccept}>
-            Accept
+            Got it
           </Button>
           <Button
             variant="ghost"

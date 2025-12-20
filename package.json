@@ -11,6 +11,7 @@
     "format": "pnpm -r format",
     "prisma:generate": "pnpm --filter @notes/database prisma:generate",
     "prisma:migrate:dev": "pnpm --filter @notes/database prisma:migrate:dev",
+    "prisma:migrate:deploy": "pnpm --filter @notes/database prisma:migrate:deploy",
     "prisma:studio": "pnpm --filter @notes/database prisma:studio"
   },
   "devDependencies": {
