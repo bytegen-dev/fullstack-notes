@@ -97,7 +97,14 @@ fullstack-notes/
 
    # Run migrations
    pnpm prisma:migrate:dev
+
+   # (Optional) Seed database with 50 sample notes for testing
+   pnpm prisma:seed
    ```
+
+   **Test User Credentials** (created by seed script):
+   - Email: `test@example.com`
+   - Password: `password123`
 
 4. **Start the development server:**
    ```bash

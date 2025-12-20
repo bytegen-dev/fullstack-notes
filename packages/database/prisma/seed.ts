@@ -1,5 +1,17 @@
-import { PrismaClient } from "../src/generated/prisma/client.js";
-import prisma from "../src/client.js";
+// Load .env file FIRST before importing anything that needs DATABASE_URL
+import { config } from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
+import bcrypt from "bcryptjs";
+import { randomUUID } from "crypto";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+// Load .env file from the web app directory
+config({ path: resolve(__dirname, "../../../apps/web/.env") });
+
+// Now dynamically import Prisma client after env is loaded
+const { default: prisma } = await import("../src/client.js");
 
 const sampleTitles = [
   "Meeting Notes",
@@ -51,21 +63,76 @@ function generateRandomContent(): string {
 async function main() {
   console.log("🌱 Starting database seed...");
 
+  const testEmail = "test@example.com";
+  const testPassword = "password123";
+
   // Find or create a test user
   let user = await prisma.user.findFirst({
-    where: { email: "test@example.com" },
+    where: { email: testEmail },
   });
 
   if (!user) {
     console.log("👤 Creating test user...");
     user = await prisma.user.create({
       data: {
-        email: "test@example.com",
+        email: testEmail,
         name: "Test User",
         emailVerified: true,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+    });
+  }
+
+  // Check if account exists, if not create one with password
+  const existingAccount = await prisma.account.findFirst({
+    where: {
+      userId: user.id,
+      providerId: "credential",
+    },
+  });
+
+  if (!existingAccount) {
+    console.log("🔐 Creating password account...");
+    const hashedPassword = await bcrypt.hash(testPassword, 10);
+    await prisma.account.create({
+      data: {
+        id: randomUUID(),
+        accountId: testEmail,
+        providerId: "credential",
+        userId: user.id,
+        password: hashedPassword,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+    console.log("✅ Password account created!");
+    console.log(`   Email: ${testEmail}`);
+    console.log(`   Password: ${testPassword}`);
+  } else {
+    console.log("🔐 Password account already exists, updating password...");
+    const hashedPassword = await bcrypt.hash(testPassword, 10);
+    await prisma.account.update({
+      where: { id: existingAccount.id },
+      data: {
+        password: hashedPassword,
+        updatedAt: new Date(),
+      },
+    });
+    console.log("✅ Password updated!");
+    console.log(`   Email: ${testEmail}`);
+    console.log(`   Password: ${testPassword}`);
+  }
+
+  // Delete existing notes for this user (to avoid duplicates on re-seed)
+  const existingNotesCount = await prisma.note.count({
+    where: { userId: user.id },
+  });
+
+  if (existingNotesCount > 0) {
+    console.log(`🗑️  Deleting ${existingNotesCount} existing notes...`);
+    await prisma.note.deleteMany({
+      where: { userId: user.id },
     });
   }
 
