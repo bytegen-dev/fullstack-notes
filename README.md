@@ -21,11 +21,19 @@ Simplified CRUD app built with Next.js, Prisma, PostgreSQL, Better Auth, and Zod
 
 ## Architecture
 
-This project follows the three-layer architecture pattern:
+This project follows a layered architecture pattern:
 
 1. **Repositories** (`packages/database/src/repositories/`) - Database access layer
 2. **Services** (`apps/web/src/lib/services/`) - Business logic coordination
-3. **Actions** (`apps/web/src/lib/actions/`) - Server mutations
+3. **API Routes** (`apps/web/src/app/api/`) - REST API endpoints
+4. **API Client** (`apps/web/src/lib/api/`) - Typed HTTP client for API calls
+5. **Components** (`apps/web/src/components/`) - UI components that use the API client
+
+**Data Flow:**
+
+```
+Components → API Client → API Routes → Services → Repositories → Database
+```
 
 ## Project Structure
 
@@ -136,6 +144,10 @@ note5/
 - ✅ Privacy policy page
 - ✅ Responsive design
 - ✅ Server-side rendering with Suspense
+- ✅ REST API with typed API client
+- ✅ Electric border animation on note cards (hover effect)
+- ✅ Git hooks for code quality (pre-commit linting, pre-push build)
+- ✅ GitHub Actions CI/CD (automated builds on every push)
 
 ## Scripts
 
@@ -153,3 +165,29 @@ note5/
 **Additional Prisma commands** (available via Prisma CLI):
 
 - `pnpm --filter @notes/database prisma migrate reset` - Reset database (drops all data and reruns migrations)
+
+## Development Workflow
+
+### Git Hooks
+
+This project uses [Husky](https://typicode.github.io/husky/) to manage Git hooks:
+
+- **Pre-commit hook**: Runs `pnpm lint` before each commit to catch linting errors early
+- **Pre-push hook**: Runs `pnpm build` before pushing to ensure the code builds successfully
+
+These hooks help maintain code quality and prevent broken code from being pushed to the repository.
+
+### CI/CD
+
+GitHub Actions automatically runs the build on every push and pull request:
+
+- **Workflow**: `.github/workflows/ci.yml`
+- **Triggers**: All branches (pushes and pull requests)
+- **Steps**:
+  1. Checkout code
+  2. Setup Node.js and pnpm
+  3. Install dependencies
+  4. Generate Prisma client
+  5. Run build
+
+The CI ensures that code builds successfully in a clean environment, not just on your local machine.
