@@ -18,7 +18,7 @@ interface NoteListProps {
 
 export function NoteList({
   initialNotes,
-  initialTotal,
+  initialTotal: _initialTotal,
   initialPage,
   initialTotalPages,
   search,

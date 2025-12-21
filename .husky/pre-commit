@@ -1,2 +1,1 @@
-# Run linting but don't block commits if it fails
-pnpm lint || echo "⚠️  Linting had issues, but continuing with commit..."
+pnpm lint

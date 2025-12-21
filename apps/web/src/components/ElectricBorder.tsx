@@ -70,9 +70,10 @@ const ElectricBorder = ({
 
     requestAnimationFrame(() => {
       [...dyAnims, ...dxAnims].forEach(a => {
-        if (typeof (a as any).beginElement === 'function') {
+        const anim = a as SVGAnimateElement;
+        if (typeof anim.beginElement === 'function') {
           try {
-            (a as any).beginElement();
+            anim.beginElement();
           } catch {
             console.warn('ElectricBorder: beginElement failed, this may be due to a browser limitation.');
           }

@@ -50,7 +50,7 @@ export function SignInForm() {
 
       router.push("/");
       router.refresh();
-    } catch (err) {
+    } catch (_err) {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
@@ -66,7 +66,7 @@ export function SignInForm() {
         provider: "github",
         callbackURL: "/",
       });
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to sign in with GitHub");
       setIsLoading(false);
     }
@@ -81,7 +81,7 @@ export function SignInForm() {
         provider: "google",
         callbackURL: "/",
       });
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to sign in with Google");
       setIsLoading(false);
     }

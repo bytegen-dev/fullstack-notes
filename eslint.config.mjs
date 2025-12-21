@@ -1,5 +1,6 @@
 import { defineConfig } from "eslint/config";
 import prettier from "eslint-config-prettier/flat";
+import reactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
 
 /**
@@ -9,6 +10,9 @@ const baseConfig = defineConfig([
   ...tseslint.configs.recommended,
   prettier,
   {
+    plugins: {
+      "react-hooks": reactHooks,
+    },
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "warn",
@@ -19,6 +23,8 @@ const baseConfig = defineConfig([
           destructuredArrayIgnorePattern: "^_",
         },
       ],
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
     },
   },
 ]);
