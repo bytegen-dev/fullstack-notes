@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import type { Note } from "@notes/database";
 import { NoteCard } from "./note-card";
 import { Pagination } from "./pagination";
-import { getNotesPage } from "@/lib/actions/note.action";
+import { api } from "@/lib/api/client";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface NoteListProps {
@@ -46,7 +46,7 @@ export function NoteList({
     setIsLoading(true);
 
     try {
-      const result = await getNotesPage(search, page, 10);
+      const result = await api.notes.list(search, page, 10);
       setNotes(result.notes);
       setCurrentPage(result.page);
       setTotalPages(result.totalPages);

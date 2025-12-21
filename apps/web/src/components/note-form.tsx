@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { createNote, updateNote, deleteNote } from "@/lib/actions/note.action";
+import { api } from "@/lib/api/client";
 import type { Note } from "@notes/database";
 import { createNoteSchema, updateNoteSchema } from "@/lib/schemas/note";
 import { Trash2 } from "lucide-react";
@@ -37,14 +37,15 @@ export function NoteForm({ note }: NoteFormProps) {
     try {
       if (isEditing && note) {
         const updateData = updateNoteSchema.parse({ ...data, id: note.id });
-        await updateNote(updateData);
+        await api.notes.update(updateData);
       } else {
-        await createNote(data);
+        await api.notes.create(data);
       }
       router.push("/");
       router.refresh();
     } catch (error) {
       console.error("Error saving note:", error);
+      // TODO: Add proper error handling/toast notification
     }
   }
 
@@ -53,11 +54,12 @@ export function NoteForm({ note }: NoteFormProps) {
     if (!confirm("Are you sure you want to delete this note?")) return;
 
     try {
-      await deleteNote(note.id);
+      await api.notes.delete(note.id);
       router.push("/");
       router.refresh();
     } catch (error) {
       console.error("Error deleting note:", error);
+      // TODO: Add proper error handling/toast notification
     }
   }
 
