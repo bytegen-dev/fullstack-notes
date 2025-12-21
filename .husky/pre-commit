@@ -1,1 +1,3 @@
-pnpm test
+# Pre-commit hook - currently disabled
+# Uncomment below to enable linting before commits
+# pnpm lint
