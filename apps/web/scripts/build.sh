@@ -1,6 +1,29 @@
 #!/bin/bash
 set -e
 
+# Get the script directory and project root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# If running from apps/web/scripts/build.sh, go up to root
+# If running from root with "cd apps/web && bash scripts/build.sh", we're already in apps/web
+if [[ "$SCRIPT_DIR" == *"/apps/web/scripts" ]]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+elif [[ "$PWD" == *"/apps/web" ]]; then
+  PROJECT_ROOT="$(cd "../.." && pwd)"
+else
+  PROJECT_ROOT="$PWD"
+fi
+
+WEB_DIR="$PROJECT_ROOT/apps/web"
+DB_DIR="$PROJECT_ROOT/packages/database"
+
+# Build database package first (required for workspace dependency)
+echo "Building database package..."
+cd "$DB_DIR"
+pnpm build
+
+# Return to web directory
+cd "$WEB_DIR"
+
 # Generate Prisma client
 pnpm prisma:generate
 
