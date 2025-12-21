@@ -1,6 +1,6 @@
-# Fullstack Notes
+# note5
 
-A simple notes app built with Next.js, Prisma, PostgreSQL, Better Auth, and Zod.
+Simplified CRUD app built with Next.js, Prisma, PostgreSQL, Better Auth, and Zod.
 
 ## Tech Stack
 
