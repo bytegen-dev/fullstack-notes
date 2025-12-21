@@ -1,5 +1,10 @@
 # note5
 
+<div align="center">
+  <img src="apps/web/public/logo-black.png" alt="note5 logo (light mode)" width="200" />
+  <img src="apps/web/public/logo-white.png" alt="note5 logo (dark mode)" width="200" />
+</div>
+
 Simplified CRUD app built with Next.js, Prisma, PostgreSQL, Better Auth, and Zod.
 
 ## Tech Stack
