@@ -13,11 +13,13 @@
     "prisma:migrate:dev": "pnpm --filter @notes/database prisma:migrate:dev",
     "prisma:migrate:deploy": "pnpm --filter @notes/database prisma:migrate:deploy",
     "prisma:seed": "pnpm --filter @notes/database prisma:seed",
-    "prisma:studio": "pnpm --filter @notes/database prisma:studio"
+    "prisma:studio": "pnpm --filter @notes/database prisma:studio",
+    "prepare": "husky"
   },
   "devDependencies": {
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
+    "husky": "^9.1.7",
     "prettier": "3.7.3",
     "typescript": "5.9.3"
   }

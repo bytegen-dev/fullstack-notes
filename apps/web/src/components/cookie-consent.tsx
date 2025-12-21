@@ -10,7 +10,6 @@ export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Check if user has already given consent
     const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
     if (!consent) {
       setShowBanner(true);
