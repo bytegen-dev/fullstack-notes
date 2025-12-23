@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import * as z from "zod";
 
 import { getSession } from "@/lib/auth/utils";
-import { createNoteSchema } from "@/lib/schemas/note";
+import {
+  createNoteSchema,
+  listNotesQuerySchema,
+} from "@/lib/schemas/note";
 import { noteService } from "@/lib/services";
 
 // GET /api/notes - List notes with search and pagination
@@ -14,19 +17,24 @@ export async function GET(request: NextRequest) {
     }
 
     const searchParams = request.nextUrl.searchParams;
-    const search = searchParams.get("search") || undefined;
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = parseInt(searchParams.get("limit") || "10", 10);
+    const queryParams = Object.fromEntries(searchParams.entries());
+    const parsed = listNotesQuerySchema.parse(queryParams);
 
     const result = await noteService.getNotes(
       session.user.id,
-      search,
-      page,
-      limit,
+      parsed.search,
+      parsed.page,
+      parsed.limit,
     );
 
     return NextResponse.json(result);
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Invalid query parameters", details: error.issues },
+        { status: 400 },
+      );
+    }
     console.error("Error fetching notes:", error);
     return NextResponse.json(
       { error: "Failed to fetch notes" },
