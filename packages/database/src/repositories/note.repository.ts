@@ -15,31 +15,42 @@ export const noteRepository = {
     page: number = 1,
     limit: number = 10,
   ): Promise<PaginatedNotesResult> {
-    const where: Prisma.NoteWhereInput = {
-      userId,
-    };
-
-    // Add search condition
-    if (search && search.trim()) {
-      where.AND = [
-        {
-          OR: [
-            { title: { contains: search, mode: "insensitive" } },
-            { content: { contains: search, mode: "insensitive" } },
-          ],
-        },
-      ];
-    }
-
-    // Get total count
-    const total = await prisma.note.count({ where });
-
     // Calculate pagination
     const skip = (page - 1) * limit;
+
+    // Get total count
+    const total = await prisma.note.count({
+      where: {
+        userId,
+        ...(search && {
+          AND: [
+            {
+              OR: [
+                { title: { contains: search, mode: "insensitive" } },
+                { content: { contains: search, mode: "insensitive" } },
+              ],
+            },
+          ],
+        }),
+      },
+    });
+
     const totalPages = Math.ceil(total / limit);
 
     const notes = await prisma.note.findMany({
-      where,
+      where: {
+        userId,
+        ...(search && {
+          AND: [
+            {
+              OR: [
+                { title: { contains: search, mode: "insensitive" } },
+                { content: { contains: search, mode: "insensitive" } },
+              ],
+            },
+          ],
+        }),
+      },
       orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
       skip,
       take: limit,
