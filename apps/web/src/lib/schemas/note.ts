@@ -11,6 +11,12 @@ export const updateNoteSchema = z.object({
   content: z.string().min(1, "Content is required"),
 });
 
+export const listNotesQuerySchema = z.object({
+  search: z.string().optional(),
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(10),
+});
+
 export type CreateNoteSchemaType = z.infer<typeof createNoteSchema>;
 export type UpdateNoteSchemaType = z.infer<typeof updateNoteSchema>;
-
+export type ListNotesQuerySchemaType = z.infer<typeof listNotesQuerySchema>;
