@@ -4,19 +4,10 @@ import { NoteListServer } from "@/components/note-list-server";
 import { CreateNoteButton } from "@/components/create-note-button";
 import { SearchInput } from "@/components/search-input";
 import { ViewToggle } from "@/components/view-toggle";
+import { NoteListSkeleton } from "@/components/note-list-skeleton";
 
 interface HomePageProps {
   searchParams: Promise<{ search?: string; page?: string; view?: string }>;
-}
-
-function NotesLoading() {
-  return (
-    <div className="space-y-4">
-      {[1, 2, 3].map((i) => (
-        <div key={i} className="h-24 animate-pulse rounded-lg bg-muted" />
-      ))}
-    </div>
-  );
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
@@ -40,7 +31,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <CreateNoteButton />
         </div>
       </div>
-      <Suspense fallback={<NotesLoading />}>
+      <Suspense fallback={<NoteListSkeleton view={view} />}>
         <NoteListServer search={search} page={page} view={view} />
       </Suspense>
     </div>
