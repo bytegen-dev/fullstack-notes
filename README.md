@@ -144,6 +144,7 @@ note5/
 - ✅ Privacy policy page
 - ✅ Responsive design
 - ✅ Server-side rendering with Suspense
+- ✅ Skeleton loaders for improved loading states (note list and form)
 - ✅ REST API with typed API client
 - ✅ Electric border animation on note cards (hover effect)
 - ✅ Git hooks for code quality (pre-commit linting, pre-push build)
@@ -191,3 +192,22 @@ GitHub Actions automatically runs the build on every push and pull request:
   5. Run build
 
 The CI ensures that code builds successfully in a clean environment, not just on your local machine.
+
+## Contributing
+
+### Branch Protection
+
+This repository uses branch protection rules to maintain code quality. See [`.github/BRANCH_PROTECTION.md`](.github/BRANCH_PROTECTION.md) for details on:
+
+- Setting up branch protection rules
+- Required PR reviews and status checks
+- Workflow implications
+
+### Pull Requests
+
+When creating a pull request:
+
+1. Ensure all CI checks pass
+2. Follow the existing code style and architecture
+3. Add tests if applicable
+4. Update documentation as needed
